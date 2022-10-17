@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.brandId ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="140px">
@@ -61,19 +61,34 @@ export default {
             { required: true, message: '显示状态[0-不显示；1-显示]不能为空', trigger: 'blur' }
         ],
         firstLetter: [
-            { required: true, message: '检索首字母不能为空', trigger: 'blur' }
+          {validator: (rule, value, callback) => {
+            if (value === '') {
+              callback(new Error('The first letter is required'))
+            } else if (!/^[a-zA-Z]$/.test(value)) {
+              callback(new Error('The first letter should be a-z or A-Z'))
+            } else {
+              callback()
+            }
+          },
+            trigger: 'blur' }
         ],
         sort: [
-            { required: true, message: '排序不能为空', trigger: 'blur' }
+          { validator: (rule, value, callback) => {
+            if (value === '') {
+              callback(new Error('The sort field is required'))
+            } else if (!Number.isInteger(value * 1) || value < 0) {
+              console.log(value)
+              callback(new Error('The sort field should be an integer and not be negative'))
+            } else {
+              callback()
+            }
+          },
+            trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
-    uploadPicSuccess (picList) {
-        // TODO 处理业务逻辑
-      console.log(JSON.stringify(picList))
-    },
     init (id) {
       this.dataForm.brandId = id || 0
       this.visible = true

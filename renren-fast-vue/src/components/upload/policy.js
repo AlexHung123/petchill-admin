@@ -1,5 +1,5 @@
 import http from '@/utils/httpRequest.js'
-export function getUploadToken () {
+export function policy () {
   return new Promise((resolve, reject) => {
     http({
       url: http.adornUrl('/thirdparty/oss/policy'),
